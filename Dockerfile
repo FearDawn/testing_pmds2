@@ -1,25 +1,15 @@
-FROM python:3.6-slim-buster as base
+FROM python:3.9-slim-buster
+ 
+COPY ./requirements.txt ./home
+COPY ./src ./home/src
+COPY ./output ./home/output
 
-FROM base as builder 
+RUN apt-get update && apt-get -y install procps
 
-COPY ./requirements.txt ./scripts/install.sh ./
-RUN ./install.sh && python -m venv /opt/venv
-
-# setup venv as path
-ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --upgrade pip
-RUN pip install -r ./requirements.txt
+RUN pip install -r ./home/requirements.txt
 
-FROM base
+WORKDIR /home/src
+EXPOSE 8080
 
-RUN apt-get update \
-    && apt-get -y install procps
-
-COPY --from=builder /opt/venv /opt/venv
-
-ENV PATH="/opt/venv/bin:$PATH"
-
-WORKDIR /opt/apps/project
-
-# Idle
-CMD ["tail", "-f", "/dev/null"]
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "-k", "uvicorn.workers.UvicornWorker", "apiv1:app"]

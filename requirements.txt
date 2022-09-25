@@ -45,4 +45,3 @@ urllib3==1.26.12
 uvicorn==0.18.3
 Werkzeug==2.2.2
 zipp==3.8.1
-pycaret == 2.3.10

@@ -1,3 +1,9 @@
 .ipynb_checkpoints
+.pytest_cache
 __pycache__
 log
+venv_pmds
+venv_linux
+output/read_data/
+output/model/test/
+output/predict/data/
